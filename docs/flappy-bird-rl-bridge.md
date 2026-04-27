@@ -50,6 +50,8 @@ Observation convention:
 [BirdY, BirdVel, NextPipeX, NextGapY]
 ```
 
+In Python (`flappy_env.py`), this raw observation is normalized to `[-1, 1]` before returning to RL algorithms.
+
 ## 4. Build and run flow
 
 Build shared library from Go:
@@ -106,16 +108,19 @@ pip install gymnasium numpy
 3. **ABI contract must stay explicit**  
    If buffer layout, action IDs, or observation order changes, update Go + Python together.
 
-4. **Deterministic episodes by seed**  
+4. **Normalize observations in Python**  
+   Keep Go as the source of raw physics values, and apply observation scaling in the Gym wrapper so PPO receives stable inputs.
+
+5. **Deterministic episodes by seed**  
    Use `InitEnv(seed)` and keep randomization controlled inside Go.
 
-5. **Reset before stepping**  
+6. **Reset before stepping**  
    Always call `ResetEnv` before the first `StepEnv` in an episode.
 
-6. **Keep Python dependencies inside `.venv`**  
+7. **Keep Python dependencies inside `.venv`**  
    Do not rely on global Python packages for RL scripts.
 
-7. **Rebuild `.so` whenever Go bridge/env changes**  
+8. **Rebuild `.so` whenever Go bridge/env changes**  
    Python will continue using old behavior until `flappy_rl.so` is rebuilt.
 
 ## 7. Practical note for future scaling

@@ -48,26 +48,38 @@ func StepEnv(action C.int, outArray *C.double) {
 }
 
 // fillBuffer maps the C pointer to a Go slice for zero-copy memory writing.
-// It formats the data as: [BirdY, BirdVel, NextPipeX, NextGapY, Reward, Done]
 func fillBuffer(obs env.Observation, reward float64, done bool, outArray *C.double) {
-	// Cast the C double pointer to a Go slice of float64 with length 6.
-	// This prevents Go from allocating new memory on the heap.
-	out := unsafe.Slice((*float64)(unsafe.Pointer(outArray)), 6)
+	// Cast the C double pointer to a Go slice of float64 with length 20.
+	out := unsafe.Slice((*float64)(unsafe.Pointer(outArray)), 20)
 
-	// Populate observations
+	// 1. Dữ liệu chuẩn cho RL (không đổi để tránh lỗi model)
 	out[0] = obs.BirdY
 	out[1] = obs.BirdVel
 	out[2] = obs.NextPipeX
 	out[3] = obs.NextGapY
 	
-	// Populate reward
+	// 2. Thông tin hỗ trợ
 	out[4] = reward
-	
-	// Populate done flag (1.0 for true, 0.0 for false)
 	if done {
 		out[5] = 1.0
 	} else {
 		out[5] = 0.0
+	}
+
+	// 3. Dữ liệu bổ sung cho "Full HD" Visualization
+	state := rlEnv.State()
+	out[6] = float64(state.Score)
+	
+	pipes := state.Pipes
+	numPipes := len(pipes)
+	if numPipes > 5 {
+		numPipes = 5 // Giới hạn 5 ống để không tràn buffer
+	}
+	out[7] = float64(numPipes)
+
+	for i := 0; i < numPipes; i++ {
+		out[8+i*2] = pipes[i].X
+		out[9+i*2] = pipes[i].GapY
 	}
 }
 
