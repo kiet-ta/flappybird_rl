@@ -24,4 +24,15 @@
 # Go workspace file
 go.work
 
+# Local project evaluation
+PROJECT_NOTES.md
+
+# RL Models and Logs
+models/
+*.zip
+
+# Python Virtual Environment
+.venv/
+__pycache__/
+
 # End of https://www.toptal.com/developers/gitignore/api/go
