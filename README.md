@@ -1,6 +1,5 @@
 # Flappy Bird RL: High-Performance Reinforcement Learning with Go & Python
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/tak/FlappyBird_RL?label=Go)](https://golang.org/)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/Framework-Stable--Baselines3-orange)](https://github.com/DLR-RM/stable-baselines3)
 
